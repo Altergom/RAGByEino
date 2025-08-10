@@ -1,0 +1,5 @@
+package tryEino
+
+func main() {
+
+}
