@@ -1,8 +1,0 @@
-TargetURL:        "https://zj.weather.com.cn/hangzhou/"
-CheckInterval:     10s
-Timeout:           6000s
-Headless:          false
-BrowserType:       "chrome"
-ChromeDriverPath:  "./chrome/chromedriver-win64/chromedriver"
-ChromeDriverPort:  4444
-FirefoxDriverPath: "./firefox/geckodriver-v0.36.0-win64/geckodriver"
