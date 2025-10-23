@@ -20,4 +20,5 @@ func main() {
 		log.Fatal("Error creating milvus service")
 	}
 	defer milvusServier.Close()
+
 }
