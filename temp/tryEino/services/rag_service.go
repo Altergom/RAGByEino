@@ -19,8 +19,8 @@ type RAGService struct {
 func NewRAGService(embeddingService *EmbeddingService, milvusService *MilvusService, cfg *config.Config) (*RAGService, error) {
 	ctx := context.Background()
 	chatModel, err := openai.NewChatModel(ctx, &openai.ChatModelConfig{
-		Model:  "gpt-3.5-turbo",
-		APIKey: cfg.OpenAIAPIKey,
+		Model:  cfg.EmbeddingModelVolcano,
+		APIKey: cfg.VolcanoAPIKey,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create chat model: %v", err)
