@@ -4,22 +4,23 @@ import (
 	"context"
 	"fmt"
 	"github.com/Altergom/tryEino/config"
-	"github.com/cloudwego/eino-ext/components/embedding/openai"
+	"github.com/cloudwego/eino-ext/components/embedding/ark"
 	"time"
 )
 
 type EmbeddingService struct {
-	embedder *openai.Embedder
+	embedder *ark.Embedder
 	cfg      *config.Config
 }
 
 func NewEmbeddingService(cfg *config.Config) (*EmbeddingService, error) {
 	ctx := context.Background()
 
-	embedder, err := openai.NewEmbedder(ctx, &openai.EmbeddingConfig{
-		APIKey:  cfg.OpenAIAPIKey,
-		Model:   cfg.EmbeddingModel,
-		Timeout: 30 * time.Second,
+	timeout := time.Second * 30
+	embedder, err := ark.NewEmbedder(ctx, &ark.EmbeddingConfig{
+		APIKey:  cfg.VolcanoAPIKey,
+		Model:   cfg.EmbeddingModelVolcano,
+		Timeout: &timeout,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OpenAI embedder: %v", err)
