@@ -13,6 +13,8 @@ type EmbeddingService struct {
 	cfg      *config.Config
 }
 
+var ES *EmbeddingService
+
 func NewEmbeddingService(cfg *config.Config) (*EmbeddingService, error) {
 	ctx := context.Background()
 

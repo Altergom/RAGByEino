@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/Altergom/tryEino/config"
-	"github.com/cloudwego/eino-ext/components/model/openai"
+	"github.com/Altergom/tryEino/prompt"
+	"github.com/cloudwego/eino-ext/components/model/ark"
 	"github.com/cloudwego/eino/schema"
 	"strings"
 )
@@ -12,13 +13,15 @@ import (
 type RAGService struct {
 	embeddingService *EmbeddingService
 	milvusService    *MilvusService
-	chatModel        *openai.ChatModel
+	chatModel        *ark.ChatModel
 	cfg              *config.Config
 }
 
+var RS *RAGService
+
 func NewRAGService(embeddingService *EmbeddingService, milvusService *MilvusService, cfg *config.Config) (*RAGService, error) {
 	ctx := context.Background()
-	chatModel, err := openai.NewChatModel(ctx, &openai.ChatModelConfig{
+	chatModel, err := ark.NewChatModel(ctx, &ark.ChatModelConfig{
 		Model:  cfg.EmbeddingModelVolcano,
 		APIKey: cfg.VolcanoAPIKey,
 	})
@@ -53,7 +56,7 @@ func (s *RAGService) AskQuestion(question string) (string, error) {
 	context1 := s.buildContext(searchResults)
 
 	// 生成回答
-	answer, err := s.generateAnswer(ctx, question, context1)
+	answer, err := s.generateAnswer(ctx, question, context1, "知识库助手")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate answer: %v", err)
 	}
@@ -70,10 +73,11 @@ func (s *RAGService) buildContext(searchResults []SearchResult) string {
 	return strings.Join(contextParts, "\n\n")
 }
 
-func (s *RAGService) generateAnswer(ctx context.Context, question string, context1 string) (string, error) {
-	messages := []*schema.Message{
-		schema.SystemMessage("你是一个知识库助手，请基于提供的上下文信息回答问题"),
-		schema.UserMessage(fmt.Sprintf("上下文：\n%s\n\n问题：%s", context1, question)),
+func (s *RAGService) generateAnswer(ctx context.Context, question, context, role string) (string, error) {
+	variables := prompt.SetTemplate(role, fmt.Sprintf("上下文：\n%s\n\n问题：%s", context, question), []*schema.Message{})
+	messages, err := prompt.Template.Format(ctx, variables)
+	if err != nil {
+		return "", err
 	}
 
 	res, err := s.chatModel.Generate(ctx, messages)

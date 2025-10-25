@@ -12,6 +12,8 @@ type DocumentService struct {
 	embeddingService *EmbeddingService
 }
 
+var DS *DocumentService
+
 func NewDocumentService(embeddingService *EmbeddingService) *DocumentService {
 	return &DocumentService{embeddingService: embeddingService}
 }

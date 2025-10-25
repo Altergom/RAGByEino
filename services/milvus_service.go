@@ -26,6 +26,8 @@ type SearchResult struct {
 	Score   float32
 }
 
+var MS *MilvusService
+
 func NewMilvusService(cfg *config.Config) (*MilvusService, error) {
 	ctx := context.Background()
 	conn, err := client.NewGrpcClient(ctx, fmt.Sprintf("%s:%d", cfg.MilvusHost, cfg.MilvusPort))
