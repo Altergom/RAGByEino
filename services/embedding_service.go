@@ -25,7 +25,7 @@ func NewEmbeddingService(cfg *config.Config) (*EmbeddingService, error) {
 		Timeout: &timeout,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create OpenAI embedder: %v", err)
+		return nil, fmt.Errorf("failed to create Ark embedder: %v", err)
 	}
 
 	return &EmbeddingService{

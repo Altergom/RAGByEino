@@ -31,6 +31,8 @@ type Config struct {
 	Temperature float64
 }
 
+var Cfg *Config
+
 func InitConfig() *Config {
 	return &Config{
 		MilvusHost:            getEnv("MILVUS_HOST", "localhost"),
