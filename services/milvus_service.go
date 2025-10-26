@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/Altergom/tryEino/config"
 	"github.com/milvus-io/milvus-sdk-go/v2/client"
@@ -29,8 +30,11 @@ type SearchResult struct {
 var MS *MilvusService
 
 func NewMilvusService(cfg *config.Config) (*MilvusService, error) {
-	ctx := context.Background()
-	conn, err := client.NewGrpcClient(ctx, fmt.Sprintf("%s:%d", cfg.MilvusHost, cfg.MilvusPort))
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	conn, err := client.NewClient(ctx, client.Config{
+		Address: fmt.Sprintf("%s:%d", cfg.MilvusHost, cfg.MilvusPort),
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to Milvus: %v", err)
 	}

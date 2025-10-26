@@ -22,7 +22,7 @@ var RS *RAGService
 func NewRAGService(embeddingService *EmbeddingService, milvusService *MilvusService, cfg *config.Config) (*RAGService, error) {
 	ctx := context.Background()
 	chatModel, err := ark.NewChatModel(ctx, &ark.ChatModelConfig{
-		Model:  cfg.EmbeddingModelVolcano,
+		Model:  cfg.ChatModelVolcano,
 		APIKey: cfg.VolcanoAPIKey,
 	})
 	if err != nil {
@@ -47,10 +47,7 @@ func (s *RAGService) AskQuestion(question string) (string, error) {
 	}
 
 	// 在milvus搜索相似文档
-	searchResults, err := s.milvusService.Search(questionVector, s.cfg.TopK)
-	if err != nil {
-		return "", fmt.Errorf("failed to search documents: %v", err)
-	}
+	searchResults, _ := s.milvusService.Search(questionVector, s.cfg.TopK)
 
 	// 构建上下文
 	context1 := s.buildContext(searchResults)
@@ -74,7 +71,7 @@ func (s *RAGService) buildContext(searchResults []SearchResult) string {
 }
 
 func (s *RAGService) generateAnswer(ctx context.Context, question, context, role string) (string, error) {
-	variables := prompt.SetTemplate(role, fmt.Sprintf("上下文：\n%s\n\n问题：%s", context, question), []*schema.Message{})
+	variables := prompt.SetTemplate(role, fmt.Sprintf("上下文：\n%s\n\n问题：%s\n\n你的回答会用到上下文但不要提及上下文", context, question), []*schema.Message{})
 	messages, err := prompt.Template.Format(ctx, variables)
 	if err != nil {
 		return "", err

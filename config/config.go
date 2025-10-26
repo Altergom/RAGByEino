@@ -18,6 +18,9 @@ type Config struct {
 	VectorDim      int
 	CollectionName string
 
+	// chatmodel配置
+	ChatModelVolcano string
+
 	// embedding配置
 	OpenAIAPIKey          string
 	VolcanoAPIKey         string
@@ -43,6 +46,7 @@ func InitConfig() *Config {
 		CollectionName:        getEnv("COLLECTION_NAME", "knowledge_base"),
 		OpenAIAPIKey:          getEnv("OPENAI_API_KEY", ""),
 		VolcanoAPIKey:         getEnv("VOLCANO_API_KEY", ""),
+		ChatModelVolcano:      getEnv("CHAT_MODEL_VOLCANO", ""),
 		EmbeddingModelOpenAI:  getEnv("EMBEDDING_MODEL_OPENAI", ""),
 		EmbeddingModelVolcano: getEnv("EMBEDDING_MODEL_VOLCANO", ""),
 		EmbeddingDim:          getEnvAsInt("EMBEDDING_DIM", 768),

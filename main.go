@@ -22,13 +22,11 @@ func main() {
 	config.Cfg = config.InitConfig()
 
 	// 初始化milvus服务
-	go func() {
-		services.MS, err = services.NewMilvusService(config.Cfg)
-		if err != nil {
-			fmt.Printf("Failed to initialize Milvus service: %v\n", err)
-		}
-		defer services.MS.Close()
-	}()
+	services.MS, err = services.NewMilvusService(config.Cfg)
+	if err != nil {
+		fmt.Printf("Failed to initialize Milvus service: %v\n", err)
+	}
+	defer services.MS.Close()
 
 	// 初始化embedding服务
 	services.ES, err = services.NewEmbeddingService(config.Cfg)
